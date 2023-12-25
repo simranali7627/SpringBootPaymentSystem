@@ -12,7 +12,6 @@ import java.util.Set;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "wallet_table")

@@ -32,8 +32,6 @@ public class Vendor {
     @JoinColumn(name = "personal_wallet_id")
     private Wallet personalWallet;
 
-    public Vendor() {
-    }
 
     public Vendor(Integer vendorId, String name, Double latitude, Double longitude, Boolean status, Wallet storeWallet, Wallet personalWallet) {
         this.vendorId = vendorId;

@@ -2,13 +2,9 @@ package com.example.accolite;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
-@SpringBootApplication
-
-@ComponentScan("com.example.accolite")
+@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 public class AccoliteApplication {
 
 	public static void main(String[] args) {

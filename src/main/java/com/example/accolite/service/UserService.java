@@ -1,16 +1,10 @@
 package com.example.accolite.service;
 
 import com.example.accolite.entity.User;
-
-import java.io.UnsupportedEncodingException;
+import com.example.accolite.model.UserModel;
 
 public interface UserService {
+    User registerUser(UserModel userModel);
 
-    User registerUser(int user_id, String user_name, String address, Double latitude, Double longitude) throws UnsupportedEncodingException;
-
-    Boolean enrollForOfflinePayment(int user_id);
-
-
-    String generateUserSecret();
-    public User approveUser(int user_id);
+    void saveVerificationTokenForUser(String token, User user);
 }

@@ -44,9 +44,7 @@ public class Transaction {
 
     }
 
-    public Transaction() {
 
-    }
 
     public long getTransactionId() {
         return transactionId;

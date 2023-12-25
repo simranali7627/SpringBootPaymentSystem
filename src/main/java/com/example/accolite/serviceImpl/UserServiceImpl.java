@@ -1,77 +1,47 @@
 package com.example.accolite.serviceImpl;
 
-
 import com.example.accolite.entity.User;
-import com.example.accolite.exception.UserAlreadyEnrolledException;
-import com.example.accolite.exception.UserNotFoundException;
-import com.example.accolite.repository.UserRepository;
+import com.example.accolite.entity.UserCategory;
+import com.example.accolite.entity.VerificationToken;
+import com.example.accolite.model.UserModel;
+import com.example.accolite.respository.UserRepository;
+import com.example.accolite.respository.VerificationTokenRepository;
 import com.example.accolite.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.io.UnsupportedEncodingException;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
-public class UserServiceImpl  implements UserService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    @Value("${jwt.secret}")
-    String jwtSecret;
+    @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
 
-    public User registerUser(int user_id, String user_name, String address, Double latitude, Double longitude) throws UnsupportedEncodingException {
-//        GeoLocation location = getGeoLocation(address);
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Override
+    public User registerUser(UserModel userModel) {
+       User user = new User();
+       user.setUserId(userModel.getUserId());
+       user.setUserName(userModel.getUserName());
 
-        User user = new User();
-        user.setUserId(user_id);
-        user.setUserName(user_name);
-        user.setUserSecret(generateUserSecret());
-        user.setRegistered(true);
-        user.setEnrolled(false);
-        user.setEnrolledAndApproved(false);
-        user.setLatitude(latitude);
-        user.setLongitude(longitude);
-        userRepository.save(user);
+       user.setPassword(userModel.getPassword());
+       user.setRegistered(userModel.isRegistered());
 
+       user.setEnrolledAndApproved(userModel.isEnrolledAndApproved());
+       user.setWallet(userModel.getWallet());
+       user.setEnrolled(userModel.isEnrolled());
+//       user.setCategory(UserCategory.valueOf("USER"));
+        userRepository.save((user));
         return user;
     }
 
-    public Boolean enrollForOfflinePayment(int user_id){
-        Optional<User> user = userRepository.findById(user_id);
-        if(user.isPresent()){
-            User currUser = user.get();
-            if(!currUser.getUser_enrolled()){
-                currUser.setUser_enrolled(true);
-                userRepository.save(currUser);
-                return true;
-            }
-            throw new UserAlreadyEnrolledException("User is already enrolled");
-        }
-        throw new UserNotFoundException("User not found");
-    }
-
     @Override
-    public User approveUser(int user_id){
-        Optional<User> user = userRepository.findById(user_id);
-        if(user.isPresent()){
-            User currUser = user.get();
-            if(!currUser.getUser_enrollapproved()){
-                currUser.setUser_enrollapproved(true);
-                userRepository.save(currUser);
-                return currUser;
-            }
-            throw new UserAlreadyEnrolledException("User is already approved");
-        }
-        throw new UserNotFoundException("User not found");
+    public void saveVerificationTokenForUser(String token, User user) {
+        VerificationToken verificationToken = new VerificationToken(user, token);
+        verificationTokenRepository.save(verificationToken);
     }
-
-
-
-    public String generateUserSecret(){
-        return UUID.randomUUID().toString();
-    }
-
 }

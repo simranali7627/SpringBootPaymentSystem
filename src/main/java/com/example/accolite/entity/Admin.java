@@ -36,8 +36,7 @@ public class Admin {
         this.name = name;
     }
 
-    public Admin() {
-    }
+
 
     @Override
     public String toString() {
